@@ -8,7 +8,7 @@ namespace DynamicMaps
 {
     public class QuestMarkerProvider : IDynamicMarkerProvider
     {
-        private List<MapMarker> _questMarkers = new List<MapMarker>();
+        private List<MapMarker> _questMarkers = new();
 
         public void OnShowInRaid(MapView map)
         {
@@ -52,19 +52,19 @@ namespace DynamicMaps
         {
             QuestUtils.TryCaptureQuestData();
 
-            var player = GameUtils.GetMainPlayer();
+			EFT.Player player = GameUtils.GetMainPlayer();
 
-            var markerDefs = QuestUtils.GetMarkerDefsForPlayer(player);
-            foreach (var markerDef in markerDefs)
+			IEnumerable<MapMarkerDef> markerDefs = QuestUtils.GetMarkerDefsForPlayer(player);
+            foreach (MapMarkerDef markerDef in markerDefs)
             {
-                var marker = map.AddMapMarker(markerDef);
+				MapMarker marker = map.AddMapMarker(markerDef);
                 _questMarkers.Add(marker);
             }
         }
 
         private void TryRemoveMarkers()
         {
-            foreach (var marker in _questMarkers)
+            foreach (MapMarker marker in _questMarkers)
             {
                 marker.ContainingMapView.RemoveMapMarker(marker);
             }

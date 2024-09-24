@@ -117,8 +117,8 @@ namespace DynamicMaps.DynamicMarkers
 
         public void OnRaidEnd(MapView map)
         {
-            // unregister from events since map is ending
-            var gameWorld = Singleton<GameWorld>.Instance;
+			// unregister from events since map is ending
+			GameWorld gameWorld = Singleton<GameWorld>.Instance;
             if (gameWorld != null)
             {
                 gameWorld.OnPersonAdd -= TryAddMarker;
@@ -134,7 +134,7 @@ namespace DynamicMaps.DynamicMarkers
         {
             _lastMapView = map;
 
-            foreach (var player in _playerMarkers.Keys.ToList())
+            foreach (Player player in _playerMarkers.Keys.ToList())
             {
                 TryRemoveMarker(player);
                 TryAddMarker(player);
@@ -143,8 +143,8 @@ namespace DynamicMaps.DynamicMarkers
 
         public void OnDisable(MapView map)
         {
-            // unregister from events since provider is being disabled
-            var gameWorld = Singleton<GameWorld>.Instance;
+			// unregister from events since provider is being disabled
+			GameWorld gameWorld = Singleton<GameWorld>.Instance;
             if (gameWorld != null)
             {
                 gameWorld.OnPersonAdd -= TryAddMarker;
@@ -158,7 +158,7 @@ namespace DynamicMaps.DynamicMarkers
 
         private void TryRemoveMarkers()
         {
-            foreach (var player in _playerMarkers.Keys.ToList())
+            foreach (Player player in _playerMarkers.Keys.ToList())
             {
                 TryRemoveMarker(player);
             }
@@ -173,9 +173,9 @@ namespace DynamicMaps.DynamicMarkers
                 return;
             }
 
-            // add all players that have spawned already in raid
-            var gameWorld = Singleton<GameWorld>.Instance;
-            foreach (var player in gameWorld.AllAlivePlayersList)
+			// add all players that have spawned already in raid
+			GameWorld gameWorld = Singleton<GameWorld>.Instance;
+            foreach (Player player in gameWorld.AllAlivePlayersList)
             {
                 if (player.IsYourPlayer || _playerMarkers.ContainsKey(player))
                 {
@@ -188,7 +188,7 @@ namespace DynamicMaps.DynamicMarkers
 
         private void OnUnregisterPlayer(IPlayer iPlayer)
         {
-            var player = iPlayer as Player;
+			Player player = iPlayer as Player;
             if (player == null)
             {
                 return;
@@ -199,8 +199,8 @@ namespace DynamicMaps.DynamicMarkers
 
         private void RemoveNonActivePlayers()
         {
-            var alivePlayers = new HashSet<Player>(Singleton<GameWorld>.Instance.AllAlivePlayersList);
-            foreach (var player in _playerMarkers.Keys.ToList())
+			HashSet<Player> alivePlayers = new HashSet<Player>(Singleton<GameWorld>.Instance.AllAlivePlayersList);
+            foreach (Player player in _playerMarkers.Keys.ToList())
             {
                 if (player.HasCorpse() || !alivePlayers.Contains(player))
                 {
@@ -211,7 +211,7 @@ namespace DynamicMaps.DynamicMarkers
 
         private void TryAddMarker(IPlayer iPlayer)
         {
-            var player = iPlayer as Player;
+			Player player = iPlayer as Player;
             if (player == null)
             {
                 return;
@@ -222,10 +222,10 @@ namespace DynamicMaps.DynamicMarkers
                 return;
             }
 
-            // set category and color
-            var category = _scavCategory;
-            var imagePath = _scavImagePath;
-            var color = _scavColor;
+			// set category and color
+			string category = _scavCategory;
+			string imagePath = _scavImagePath;
+			Color color = _scavColor;
 
             if (player.IsGroupedWithMainPlayer())
             {
@@ -251,16 +251,16 @@ namespace DynamicMaps.DynamicMarkers
                 return;
             }
 
-            // try adding marker
-            var marker = _lastMapView.AddPlayerMarker(player, category, color, imagePath);
+			// try adding marker
+			PlayerMapMarker marker = _lastMapView.AddPlayerMarker(player, category, color, imagePath);
             _playerMarkers[player] = marker;
         }
 
         private void RemoveDisabledMarkers()
         {
-            foreach (var player in _playerMarkers.Keys.ToList())
+            foreach (Player player in _playerMarkers.Keys.ToList())
             {
-                var marker = _playerMarkers[player];
+				PlayerMapMarker marker = _playerMarkers[player];
                 if (!ShouldShowCategory(marker.Category))
                 {
                     TryRemoveMarker(player);
@@ -281,20 +281,15 @@ namespace DynamicMaps.DynamicMarkers
 
         private bool ShouldShowCategory(string category)
         {
-            switch (category)
-            {
-                case _friendlyPlayerCategory:
-                    return _showFriendlyPlayers;
-                case _enemyPlayerCategory:
-                    return _showEnemyPlayers;
-                case _bossCategory:
-                    return _showBosses;
-                case _scavCategory:
-                    return _showScavs;
-                default:
-                    return false;
-            }
-        }
+			return category switch
+			{
+				_friendlyPlayerCategory => _showFriendlyPlayers,
+				_enemyPlayerCategory => _showEnemyPlayers,
+				_bossCategory => _showBosses,
+				_scavCategory => _showScavs,
+				_ => false,
+			};
+		}
 
         private void HandleSetBoolOption(ref bool boolOption, bool value)
         {

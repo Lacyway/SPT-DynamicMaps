@@ -9,10 +9,10 @@ namespace DynamicMaps.DynamicMarkers
     {
         // TODO: move to config
         private static string _btrIconPath = "Markers/btr.png";
-        private static Color _btrColor = new Color(54f/255f, 100f/255f, 42f/255f);
-        private static Vector2 _btrSize = new Vector2(45, 45f);
-        private static string _btrName = "BTR";
-        private static string _btrCategory = "BTR";
+        private static Color _btrColor = new(54f/255f, 100f/255f, 42f/255f);
+        private static Vector2 _btrSize = new(45, 45f);
+        private const string _btrName = "BTR";
+        private const string _btrCategory = "BTR";
         //
 
         private MapMarker _btrMarker;
@@ -50,7 +50,7 @@ namespace DynamicMaps.DynamicMarkers
                 return;
             }
 
-            var btrView = GameUtils.GetBTRView();
+			EFT.Vehicle.BTRView btrView = GameUtils.GetBTRView();
             if (btrView == null)
             {
                 return;

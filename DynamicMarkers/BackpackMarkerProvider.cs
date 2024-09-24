@@ -18,11 +18,11 @@ namespace DynamicMaps.DynamicMarkers
         private const string _backpackCategory = "Backpack";
         private const string _backpackImagePath = "Markers/backpack.png";
         private static Color _backpackColor = Color.green;
-        private static Vector2 _backpackSize = new Vector2(30f, 30f);
+		private static Vector2 _backpackSize = new(30f, 30f);
         //
 
         private MapView _lastMapView;
-        private Dictionary<int, MapMarker> _backpackMarkers = new Dictionary<int, MapMarker>();
+        private Dictionary<int, MapMarker> _backpackMarkers = [];
 
         public void OnShowInRaid(MapView map)
         {
@@ -47,9 +47,9 @@ namespace DynamicMaps.DynamicMarkers
         public void OnMapChanged(MapView map, MapDef mapDef)
         {
             _lastMapView = map;
-            var gameWorld = Singleton<GameWorld>.Instance;
+			GameWorld gameWorld = Singleton<GameWorld>.Instance;
 
-            foreach (var itemNetId in _backpackMarkers.Keys.ToList())
+            foreach (int itemNetId in _backpackMarkers.Keys.ToList())
             {
                 TryRemoveMarker(itemNetId);
 
@@ -79,12 +79,12 @@ namespace DynamicMaps.DynamicMarkers
 
         private void AddThrownBackpacks()
         {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            foreach (var pair in PlayerInventoryThrowItemPatch.ThrownItems)
+			GameWorld gameWorld = Singleton<GameWorld>.Instance;
+            foreach (KeyValuePair<int, EFT.InventoryLogic.Item> pair in PlayerInventoryThrowItemPatch.ThrownItems)
             {
-                var itemNetId = pair.Key;
-                var item = pair.Value;
-                var itemType = ItemViewFactory.GetItemType(item.GetType());
+				int itemNetId = pair.Key;
+				EFT.InventoryLogic.Item item = pair.Value;
+				EItemType itemType = ItemViewFactory.GetItemType(item.GetType());
 
                 // check if item is already in markers or is not a backpack and doesn't not exist as loot item in the world
                 if (_backpackMarkers.ContainsKey(itemNetId)
@@ -105,8 +105,8 @@ namespace DynamicMaps.DynamicMarkers
                 return;
             }
 
-            var itemNetId = lootItem.GetNetId();
-            var itemType = ItemViewFactory.GetItemType(lootItem.Item.GetType());
+			int itemNetId = lootItem.GetNetId();
+			EItemType itemType = ItemViewFactory.GetItemType(lootItem.Item.GetType());
 
             if (_backpackMarkers.ContainsKey(itemNetId)
                 || itemType != EItemType.Backpack
@@ -130,8 +130,8 @@ namespace DynamicMaps.DynamicMarkers
 
         private void RemoveStaleMarkers()
         {
-            var gameWorld = Singleton<GameWorld>.Instance;
-            foreach (var itemNetId in _backpackMarkers.Keys.ToList())
+			GameWorld gameWorld = Singleton<GameWorld>.Instance;
+            foreach (int itemNetId in _backpackMarkers.Keys.ToList())
             {
                 // check if item is in world
                 if (gameWorld.LootItems.ContainsKey(itemNetId))
@@ -150,14 +150,14 @@ namespace DynamicMaps.DynamicMarkers
                 return;
             }
 
-            var itemNetId = lootItem.GetNetId();
+			int itemNetId = lootItem.GetNetId();
             if (_backpackMarkers.ContainsKey(itemNetId))
             {
                 return;
             }
 
-            // try adding the marker
-            var marker = map.AddTransformMarker(lootItem.TrackableTransform, lootItem.Item.ShortName.BSGLocalized(),
+			// try adding the marker
+			TransformMapMarker marker = map.AddTransformMarker(lootItem.TrackableTransform, lootItem.Item.ShortName.BSGLocalized(),
                                                 _backpackCategory, _backpackColor, _backpackImagePath, _backpackSize);
 
             _backpackMarkers[itemNetId] = marker;
@@ -176,7 +176,7 @@ namespace DynamicMaps.DynamicMarkers
 
         private void TryRemoveMarkers()
         {
-            foreach (var itemNetId in _backpackMarkers.Keys.ToList())
+            foreach (int itemNetId in _backpackMarkers.Keys.ToList())
             {
                 TryRemoveMarker(itemNetId);
             }

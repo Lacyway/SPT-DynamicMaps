@@ -11,9 +11,7 @@ namespace DynamicMaps.Patches
     {
         protected override MethodBase GetTargetMethod()
         {
-            return AccessTools.Method(typeof(EftBattleUIScreen),
-                                      nameof(EftBattleUIScreen.Show),
-                                      new Type[] { typeof(GamePlayerOwner) });
+            return AccessTools.Method(typeof(EftBattleUIScreen), nameof(EftBattleUIScreen.Show), [typeof(GamePlayerOwner)]);
         }
 
         [PatchPostfix]

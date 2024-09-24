@@ -3,7 +3,7 @@
     <TargetFramework>net471</TargetFramework>
     <AssemblyName>DynamicMaps</AssemblyName>
     <Description>Dynamic in-game maps for SPT</Description>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -119,14 +119,14 @@
     <WriteLinesToFile File="@(VersionCs)" Lines="namespace DynamicMaps{public static class BuildInfo {public const string Version = &quot;$(Version)&quot;%3B}}"/>
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <ItemGroup>
       <OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
       <License Include="$(ProjectDir)LICENSE.txt" />
       <Resources Include="$(ProjectDir)Resources\**\*.*" />
     </ItemGroup>
 
-    <!-- Copies the output and resources to tarkov game folder -->
+    --><!-- Copies the output and resources to tarkov game folder --><!--
     <Copy
       SourceFiles="@(OutputDLL);@(Resources);@(License)"
       DestinationFolder="$(TarkovDir)BepInEx\plugins\DynamicMaps\%(RecursiveDir)"
@@ -136,7 +136,7 @@
       DestinationFolder="$(TarkovDebugDir)BepinEx\plugins\DynamicMaps\%(RecursiveDir)"
     />
 
-    <!-- Creates a release zip file -->
+    --><!-- Creates a release zip file --><!--
     <RemoveDir Directories="$(ProjectDir)release" />
     <Copy
       SourceFiles="@(OutputDLL);@(Resources);@(License)"
@@ -146,6 +146,6 @@
       SourceDirectory="$(ProjectDir)release\DynamicMaps\"
       DestinationFile="$(ProjectDir)release\DynamicMaps-$(Version)-$(SourceRevisionId).zip"
     />
-  </Target>
+  </Target>-->
 
 </Project>

@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using SPT.Custom.Airdrops;
 using SPT.Reflection.Patching;
 using HarmonyLib;
+using EFT.SynchronizableObjects;
 
 namespace DynamicMaps.Patches
 {
     internal class AirdropBoxOnBoxLandPatch : ModulePatch
     {
-        internal static event Action<AirdropBox> OnAirdropLanded;
-        internal static List<AirdropBox> Airdrops = new List<AirdropBox>();
+        internal static event Action<AirdropSynchronizableObject> OnAirdropLanded;
+        internal static List<AirdropSynchronizableObject> Airdrops = [];
 
         private bool _hasRegisteredEvents = false;
 
@@ -23,14 +23,14 @@ namespace DynamicMaps.Patches
             }
 
             // thanks to TechHappy for the breadcrumb of what method to patch
-            return AccessTools.Method(typeof(AirdropBox), "OnBoxLand");
+            return AccessTools.Method(typeof(AirdropLogicClass), nameof(AirdropLogicClass.method_1));
         }
 
         [PatchPostfix]
-        public static void PatchPostfix(AirdropBox __instance)
+        public static void PatchPostfix(AirdropSynchronizableObject ___airdropSynchronizableObject_0)
         {
-            Airdrops.Add(__instance);
-            OnAirdropLanded?.Invoke(__instance);
+            Airdrops.Add(___airdropSynchronizableObject_0);
+            OnAirdropLanded?.Invoke(___airdropSynchronizableObject_0);
         }
 
         internal static void OnRaidEnd()

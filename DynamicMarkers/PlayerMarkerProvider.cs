@@ -47,7 +47,7 @@ namespace DynamicMaps.DynamicMarkers
                 return;
             }
 
-            var player = GameUtils.GetMainPlayer();
+			EFT.Player player = GameUtils.GetMainPlayer();
             if (player == null)
             {
                 return;
